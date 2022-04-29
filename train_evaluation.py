@@ -15,8 +15,11 @@ import numpy as np
 from tqdm import tqdm
 import wandb
 import torch
+from torchvision.models import resnet18, resnet50
 
 from dfc_dataset import DFCDataset
+from dfc_model import DualBaseline
+from resnet_simclr import NormalSimCLRDownstream, DoubleResNetSimCLRDownstream
 from metrics import ClasswiseMultilabelMetrics, ClasswiseAccuracy
 from utils import save_checkpoint_single_model, dotdictify
 from validation_utils import validate_all
