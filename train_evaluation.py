@@ -594,7 +594,7 @@ for epoch in range(config.epochs):
 
         save_weights_path = (
             "checkpoints/"
-            + "-".join([model_name, target_name, run.name, "epoch", str(epoch)])
+            + "-".join([model_name, target_name, str(run.name), "epoch", str(epoch)])
             + ".pth"
         )
         save_checkpoint_single_model(
