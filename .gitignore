@@ -1,6 +1,5 @@
 .vscode/
 .ipynb_checkpoints/
 __pycache__/
-Transformer_SSL/
 runs/
 wandb/
