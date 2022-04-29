@@ -29,23 +29,6 @@ from Transformer_SSL.models.swin_transformer import (
     DownstreamSharedDSwin,
 )
 
-###############################################################################################
-#
-# Script to train classification models for LCC on the DFC2020 data
-# 4 possible models: Baseline, i.e. EarlyFusion (simple ResNet18)
-#                    DualBaseline, i.e. LateFusion (two ResNet18 encoders + classificaton layer)
-#                    Alignment, i.e. MMA (SSL trained ResNet18 encoders + classification layer)
-#                    SimCLR, i.e. Dual-SimCLR (SSL trained ResNet18 encoders + classification layer)
-# This script trains the supervised models from scratch. The SSL models can be fine-tuned (train
-# all parameters), or only the classification layer is trained (linear probe).
-#
-# Note: throughout the code and text, these are synonymous:
-#    * baseline <-> resnet18 <-> EarlyFusion
-#    * dual-baseline <-> DualBaseline <-> LateFusion
-#    * alignment <-> DoubleAlignmentDownstream <-> Multi Modal Alignment (with classification layer)
-#    * simclr <-> DoubleResNetSimCLRDownstream <-> Double-SimCLR (with classification layer)
-################################################################################################
-
 model_name_map = {
     "resnet18": "baseline",
     "resnet50": "baseline",
@@ -135,11 +118,11 @@ parser.add_argument(
         "SwinBaseline",
         "DualBaseline",
         "DualSwinBaseline",
-        "DoubleAlignmentDownstream",
+        #      "DoubleAlignmentDownstream",
         "DoubleResNetSimCLRDownstream",
         "NormalSimCLRDownstream",
         "DoubleSwinTransformerDownstream",
-        "MobyDownstream",
+        #      "MobyDownstream",
         "DownstreamSharedDSwin",
         "SharedDSwinBaseline",
     ],
