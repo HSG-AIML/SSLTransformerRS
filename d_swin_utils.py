@@ -265,8 +265,8 @@ class SwinTrainer(object):
             if epoch_counter % 50 == 0:
                 print("Saving checkpoint for epoch:", epoch_counter)
                 checkpoint_name = (
-                    "checkpoints/d-swim"
-                    + self.run_name
+                    "checkpoints/d-swin"
+                    + str(self.run_name)
                     + "-epoch"
                     + str(epoch_counter)
                     + ".pth"
