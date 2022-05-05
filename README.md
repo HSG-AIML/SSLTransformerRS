@@ -8,7 +8,7 @@ The Swin transformer backbones are trained with the `train_d_swin_backbone.py` s
 [here](https://github.com/SwinTransformer/Transformer-SSL). Changes to the default parameters, e.g. path to the training data, can be made by adjusting the values in the config file at `configs/backbone_config.json`.
 
 ## Classification Downstream Tasks
-Fine-tuning and linear evaluation on the classification tasks is done with `train_evaluation.py`. The `scripts` directory contains small bash scripts to evaluate the different settings covered in the paper.
+Fine-tuning and linear evaluation on the classification tasks is done with `train_evaluation.py`. The `scripts/` directory contains small bash scripts to evaluate the different settings covered in the paper.
 
 ## Data
 The datasets used in this work are publicly available:
