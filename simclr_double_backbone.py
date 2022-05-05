@@ -205,7 +205,7 @@ class SimCLRDoubleBackbone(object):
         # save model checkpoints
         checkpoint_name = (
             "checkpoints/simclr-double-backbone-"
-            + self.run_name
+            + str(self.run_name)
             + "-epoch"
             + str(epoch_counter)
             + ".pth"
