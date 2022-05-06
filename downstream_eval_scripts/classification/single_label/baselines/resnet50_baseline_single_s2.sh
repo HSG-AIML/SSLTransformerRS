@@ -1,0 +1,1 @@
+python train_evaluation.py --checkpoint=checkpoints/simclr-double-backbone-still-mountain-55-epoch100.pth --finetuning=True --image_px_size=224 --learning_rate=3e-06 --model=resnet50 --s1_input_channels=0 --s2_input_channels=13 --seed=44 --target=dfc_label --wandb_project=EV-baselines

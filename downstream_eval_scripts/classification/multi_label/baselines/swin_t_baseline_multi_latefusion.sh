@@ -1,0 +1,1 @@
+python train_evaluation.py --batch_size=32 --checkpoint=checkpoints/d-swin-ruby-meadow-21-epoch299.pth --finetuning=True --image_px_size=224 --learning_rate=3e-07 --model=DualSwinBaseline --seed=44 --target=dfc_multilabel_one_hot --wandb_project=EV-baselines
