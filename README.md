@@ -21,7 +21,7 @@ We provide checkpoints for ResNet50 and Swin-t transformer models trained with S
 * [Swin-t]()
 
 ## Code
-This repository uses code from the following sources:
+This repository incorporates code from the following sources:
 * [Data handling](https://github.com/lukasliebel/dfc2020_baseline)
 * [SimCLR](https://github.com/sthalles/SimCLR)
 * [Swin Transformer](https://github.com/SwinTransformer/Transformer-SSL)
