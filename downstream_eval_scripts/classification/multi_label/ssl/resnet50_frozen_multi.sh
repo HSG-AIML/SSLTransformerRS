@@ -1,0 +1,1 @@
+python train_evaluation.py --base_mode=resnet50 --batch_size=32 --checkpoint=checkpoints/simclr-double-backbone-still-mountain-55-epoch100.pth --finetuning=False --image_px_size=224 --learning_rate=3e-06 --model=DoubleResNetSimCLRDownstream --seed=44 --target=dfc_multilabel_one_hot --wandb_project=EV-SSL

@@ -1,0 +1,1 @@
+python train_evaluation.py --batch_size=32 --checkpoint=checkpoints/d-swin-ruby-meadow-21-epoch299.pth --finetuning=True --image_px_size=224 --learning_rate=3e-06 --model=DoubleSwinTransformerDownstream --seed=44 --target=dfc_label --wandb_project=EV-SSL
