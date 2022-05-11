@@ -9,9 +9,10 @@ os.environ["NUMEXPR_NUM_THREADS"] = "6"  # export NUMEXPR_NUM_THREADS=6
 
 from tqdm import tqdm
 import torch
+import torch.nn.functional as F
 
 from utils import get_dataset_similarities, get_rank_statistics
-from metrics import ClasswiseAccuracy, ClasswiseMultilabelMetrics
+from metrics import ClasswiseAccuracy, ClasswiseMultilabelMetrics, PixelwiseMetrics
 
 
 def validate_all(model, val_loader, criterion, device, config, model_name, target_name):
@@ -25,6 +26,8 @@ def validate_all(model, val_loader, criterion, device, config, model_name, targe
     elif target_name == "multi-classification":
         sigmoid = torch.nn.Sigmoid()
         metrics = ClasswiseMultilabelMetrics(config.num_classes)
+    elif target_name == "pixel-classification":
+        metrics = PixelwiseMetrics(config.num_classes)
 
     with torch.no_grad():
         for idx, sample in enumerate(pbar):
@@ -74,6 +77,8 @@ def validate_all(model, val_loader, criterion, device, config, model_name, targe
                 y = sample[config.target].long().to(device)
             elif target_name == "multi-classification":
                 y = sample[config.target].to(device)
+            elif target_name == "pixel-classification":
+                y = sample[config.target].type(torch.LongTensor).to(device)
 
             y_hat = model(img)
 
@@ -86,6 +91,9 @@ def validate_all(model, val_loader, criterion, device, config, model_name, targe
                 pred = y_hat.round()
             elif target_name == "single-classification":
                 _, pred = torch.max(y_hat, dim=1)
+            elif target_name == "pixel-classification":
+                probas = F.softmax(y_hat, dim=1)
+                pred = torch.argmax(probas, axis=1)
 
             epoch_losses = torch.cat([epoch_losses, loss[None].detach().cpu()])
             metrics.add_batch(y, pred)
@@ -117,6 +125,16 @@ def validate_all(model, val_loader, criterion, device, config, model_name, targe
                 **{
                     "validation_f1_" + k: v
                     for k, v in metrics.get_classwise_f1().items()
+                },
+            }
+
+        elif target_name == "pixel-classification":
+            val_stats = {
+                "validation_loss": mean_loss.item(),
+                "validation_average_accuracy": metrics.get_average_accuracy(),
+                **{
+                    "validation_accuracy_" + k: v
+                    for k, v in metrics.get_classwise_accuracy().items()
                 },
             }
 

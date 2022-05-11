@@ -16,15 +16,17 @@ from tqdm import tqdm
 import wandb
 import torch
 from torchvision.models import resnet18, resnet50
+import torch.nn.functional as F
 
 from dfc_dataset import DFCDataset
 from dfc_model import DualBaseline
 from resnet_simclr import NormalSimCLRDownstream, DoubleResNetSimCLRDownstream
-from metrics import ClasswiseMultilabelMetrics, ClasswiseAccuracy
+from metrics import ClasswiseMultilabelMetrics, ClasswiseAccuracy, PixelwiseMetrics
 from utils import save_checkpoint_single_model, dotdictify
 from validation_utils import validate_all
 from Transformer_SSL.models import build_model
 from Transformer_SSL.models.swin_transformer import (
+    DoubleSwinTransformerSegmentation,
     DoubleSwinTransformerDownstream,
     DownstreamSharedDSwin,
 )
@@ -39,6 +41,7 @@ model_name_map = {
     "DoubleAlignmentDownstream": "alignment",
     "DoubleResNetSimCLRDownstream": "simclr",
     "DoubleSwinTransformerDownstream": "swin-t",
+    "DoubleSwinTransformerSegmentation": "swin-t",
     "MobyDownstream": "moby",
     "DownstreamSharedDSwin": "shared-swin-t",
     "SharedDSwinBaseline": "shared-swin-t-baseline",
@@ -46,6 +49,7 @@ model_name_map = {
 target_name_map = {
     "dfc_label": "single-classification",
     "dfc_multilabel_one_hot": "multi-classification",
+    "dfc": "pixel-classification"
 }
 bool_args = [
     "clip_sample_values",
@@ -122,6 +126,7 @@ parser.add_argument(
         "DoubleResNetSimCLRDownstream",
         "NormalSimCLRDownstream",
         "DoubleSwinTransformerDownstream",
+        "DoubleSwinTransformerSegmentation",
         #      "MobyDownstream",
         "DownstreamSharedDSwin",
         "SharedDSwinBaseline",
@@ -137,7 +142,7 @@ parser.add_argument(
 parser.add_argument(
     "--target",
     default="dfc_label",
-    choices=["dfc_label", "dfc_multilabel_one_hot"],
+    choices=["dfc_label", "dfc_multilabel_one_hot", "dfc"],
     type=str,
 )
 parser.add_argument("--finetuning", default="False", type=str)
@@ -256,7 +261,6 @@ elif model_name == "dual-swin-baseline":
         freeze_layers=False,
     )
 
-
 elif model_name == "normal-simclr":
     checkpoint = torch.load(config.checkpoint, map_location=lambda device, loc: device)
     model = eval(config.model)(
@@ -313,16 +317,22 @@ elif model_name == "swin-t":
     )  # "checkpoints/d-swimdistinctive-armadillo-24-epoch150.pth")
     weights = checkpoint["state_dict"]
     s1_weights = {
-        k[len("backbone1.") :]: v for k, v in weights.items() if "backbone1" in k
+        k[len("backbone1."):]: v for k, v in weights.items() if "backbone1" in k
     }
     s2_weights = {
-        k[len("backbone2.") :]: v for k, v in weights.items() if "backbone2" in k
+        k[len("backbone2."):]: v for k, v in weights.items() if "backbone2" in k
     }
     s1_backbone.load_state_dict(s1_weights)
     s2_backbone.load_state_dict(s2_weights)
-    model = DoubleSwinTransformerDownstream(
-        s1_backbone, s2_backbone, out_dim=8, device=device
-    )
+
+    if target_name == "pixel-classification":
+        model = DoubleSwinTransformerSegmentation(
+            s1_backbone, s2_backbone, out_dim=8, device=device
+        )
+    else:
+        model = DoubleSwinTransformerDownstream(
+            s1_backbone, s2_backbone, out_dim=8, device=device
+        )
 
 elif model_name == "shared-swin-t":
     with open("configs/shared_backbone_config.json", "r") as fp:
@@ -378,6 +388,8 @@ if target_name == "multi-classification":
     sigmoid = torch.nn.Sigmoid().to(device)
 elif target_name == "single-classification":
     criterion = torch.nn.CrossEntropyLoss(ignore_index=255, reduction="mean").to(device)
+elif target_name == "pixel-classification":
+    criterion = torch.nn.CrossEntropyLoss(ignore_index=255).to(device)
 else:
     raise ValueError("Invalid target specified")
 
@@ -414,7 +426,7 @@ if model_name in [
         # train only final linear layer for SSL methods
         print("Frozen backbone")
         parameters = list(filter(lambda p: p.requires_grad, model.parameters()))
-        assert len(parameters) == 2  # fc.weight, fc.bias
+        # assert len(parameters) == 2  # fc.weight, fc.bias
 else:
     parameters = model.parameters()
 
@@ -451,6 +463,7 @@ val_dataset = DFCDataset(
     seed=config.seed,
 )
 
+
 train_loader = torch.utils.data.DataLoader(
     train_dataset,
     batch_size=config.batch_size,
@@ -479,6 +492,8 @@ for epoch in range(config.epochs):
         metrics = ClasswiseAccuracy(config.num_classes)
     elif target_name == "multi-classification":
         metrics = ClasswiseMultilabelMetrics(config.num_classes)
+    elif target_name == "pixel-classification":
+        metrics = PixelwiseMetrics(config.num_classes)
 
     if config.learning_rate_schedule.get(epoch) is not None:
         for g in optimizer.param_groups:
@@ -531,6 +546,8 @@ for epoch in range(config.epochs):
             y = sample[config.target].long().to(device)
         elif target_name == "multi-classification":
             y = sample[config.target].to(device)
+        elif target_name == "pixel-classification":
+            y = sample[config.target].type(torch.LongTensor).to(device)
 
         y_hat = model(img)
 
@@ -547,6 +564,9 @@ for epoch in range(config.epochs):
             pred = y_hat.round()
         elif target_name == "single-classification":
             _, pred = torch.max(y_hat, dim=1)
+        elif target_name == "pixel-classification":
+            probas = F.softmax(y_hat, dim=1)
+            pred = torch.argmax(probas, axis=1)
 
         epoch_losses = torch.cat([epoch_losses, loss[None].detach().cpu()])
         metrics.add_batch(y, pred)
@@ -578,6 +598,15 @@ for epoch in range(config.epochs):
             **{"train_f1_" + k: v for k, v in metrics.get_classwise_f1().items()},
         }
 
+    elif target_name == "pixel-classification":
+        train_stats = {
+            "train_loss": mean_loss.item(),
+            "train_average_accuracy": metrics.get_average_accuracy(),
+            **{
+                "train_accuracy_" + k: v
+                for k, v in metrics.get_classwise_accuracy().items()
+            },
+        }
     wandb.log(train_stats, step=step)
 
     if epoch % 2 == 0:
@@ -585,7 +614,6 @@ for epoch in range(config.epochs):
             model, val_loader, criterion, device, config, model_name, target_name
         )
         print(f"Epoch:{epoch}", val_stats)
-
         wandb.log(val_stats, step=step)
 
     if epoch % 200 == 0:
@@ -593,9 +621,7 @@ for epoch in range(config.epochs):
             continue
 
         save_weights_path = (
-            "checkpoints/"
-            + "-".join([model_name, target_name, str(run.name), "epoch", str(epoch)])
-            + ".pth"
+            "checkpoints/" + "-".join([model_name, target_name, str(run.name), "epoch", str(epoch)]) + ".pth"
         )
         save_checkpoint_single_model(
             model, optimizer, val_stats, epoch, save_weights_path
