@@ -1,6 +1,9 @@
 # Self-supervised Vision Transformers for Land-cover Segmentation and Classification
 This project aims to provide land-cover classification and segmentation of Satellite images using Deep Learning, by introducing a self-supervised pre-trained Swin Transformer. The training is done in two stages; first, self-supervised training of one unique backbone is performed on a large unlabeled dataset, second, supervised fine-tuning of this backbone is performed on a small, labeled dataset, for two separate downstream tasks.
 
+In this repository, we make the code built for this project (implemented in PyTorch, version XXX) and pretrained backbones for Sentinel-1 and Sentinel-2 data available to the community. The pretrained backbones are task agnostic and therefore can be readily deployed and fine-tuned to a range of downstream tasks utilizing Sentinel-1 or Sentinel-2 data, or a fusion of both.
+
+
 **Qualitative comparison of ours segmentation results with different methods (ours: SwinUNet SSL-ft)**
 ![Qualitative comparison of ours segmentation results with different methods (ours: SwinUNet SSL-ft)](results.jpg)
 
@@ -29,10 +32,26 @@ The datasets used in this work are publicly available:
 * [SEN12MS](https://mediatum.ub.tum.de/1474000) (self-supervised pre-training)
 * [DFC2020](https://ieee-dataport.org/competitions/2020-ieee-grss-data-fusion-contest#files) (downstream land-cover classification/segmentation)
 
-## Checkpoints
-We provide checkpoints for ResNet50 and Swin-t transformer models trained with Sentinel-1/2 pairs from SEN12MS (self-supervised):
+## Pretrained models 
+We provide pretrained ResNet50 and Swin-t transformer backbones trained with Sentinel-1/2 pairs from SEN12MS (self-supervised):
 * [ResNet50](https://drive.google.com/file/d/1txqsNLUhIiQXRxflK_SMHn4y7Pp8o3mZ/view?usp=sharing)
 * [Swin-t](https://drive.google.com/file/d/1e7QhC2-zoBFgb65yN1ADWBZLMShHOweY/view?usp=sharing)
+
+These backbones can be readily fine-tuned to a range of downstream tasks that utilize Sentinel-1 data, Sentinel-2 data or the fusion of both. We provide example Jupyter Notebooks for utilizing these pretrained backbones:
+
+* XXX
+* XXX
+
+## Acknowledging this work
+
+If you utilize elements from this work for your own work, please cite:
+
+* Scheibenreif, Hanna, Mommert, Borth; *Self-supervised Vision Transformers for Land-cover Segmentation and Classification*, CVPR 2022 *Earthvision* Workshop
+
+and
+
+* Scheibenreif, Mommert, Borth; *Contrastive Self-Supervised Data Fusion for Satellite Imagery*,  ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences, Volume V-3-2022
+
 
 ## Code
 This repository incorporates code from the following sources:
@@ -40,3 +59,4 @@ This repository incorporates code from the following sources:
 * [SimCLR](https://github.com/sthalles/SimCLR)
 * [Swin Transformer](https://github.com/SwinTransformer/Transformer-SSL)
 * [Swin-Unet](https://github.com/HuCaoFighting/Swin-Unet)
+
