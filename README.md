@@ -39,8 +39,8 @@ We provide pretrained ResNet50 and Swin-t transformer backbones trained with Sen
 
 These backbones can be readily fine-tuned to a range of downstream tasks that utilize Sentinel-1 data, Sentinel-2 data or the fusion of both. We provide example Jupyter Notebooks for utilizing these pretrained backbones:
 
-* XXX
-* XXX
+* `demo/demo_resnet_backbone.ipynb`, for classification using a self-supervised pre-trained `ResNet` backbone
+* `demo/demo_swin_backbone.ipynb`, for classification using a self-supervised pre-trained `SwinTransformer` backbone
 
 ## Acknowledging this work
 
