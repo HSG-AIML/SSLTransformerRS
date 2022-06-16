@@ -1,7 +1,7 @@
 # Self-supervised Vision Transformers for Land-cover Segmentation and Classification
 This project aims to provide land-cover classification and segmentation of Satellite images using Deep Learning, by introducing a self-supervised pre-trained Swin Transformer. The training is done in two stages; first, self-supervised training of one unique backbone is performed on a large unlabeled dataset, second, supervised fine-tuning of this backbone is performed on a small, labeled dataset, for two separate downstream tasks.
 
-In this repository, we make the code built for this project (implemented in PyTorch, version XXX) and pretrained backbones for Sentinel-1 and Sentinel-2 data available to the community. The pretrained backbones are task agnostic and therefore can be readily deployed and fine-tuned to a range of downstream tasks utilizing Sentinel-1 or Sentinel-2 data, or a fusion of both.
+In this repository, we make the code built for this project (implemented in PyTorch, version 1.11) and pretrained backbones for Sentinel-1 and Sentinel-2 data available to the community. The pretrained backbones are task agnostic and therefore can be readily deployed and fine-tuned to a range of downstream tasks utilizing Sentinel-1 or Sentinel-2 data, or a fusion of both.
 
 
 **Qualitative comparison of ours segmentation results with different methods (ours: SwinUNet SSL-ft)**
