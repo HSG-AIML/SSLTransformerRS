@@ -39,18 +39,18 @@ We provide pretrained ResNet50 and Swin-t transformer backbones trained with Sen
 
 These backbones can be readily fine-tuned to a range of downstream tasks that utilize Sentinel-1 data, Sentinel-2 data or the fusion of both. We provide example Jupyter Notebooks for utilizing these pretrained backbones:
 
-* `demo/demo_resnet_backbone.ipynb`, for classification using a self-supervised pre-trained `ResNet` backbone
-* `demo/demo_swin_backbone.ipynb`, for classification using a self-supervised pre-trained `SwinTransformer` backbone
+* `demo/demo_resnet_backbone.ipynb`, for classification using a self-supervised pre-trained `ResNet` backbone, utilizing Sentinel-2 multi-band imaging data, only;
+* `demo/demo_swin_backbone.ipynb`, for classification using a self-supervised pre-trained `SwinTransformer` backbone, utilizing a fusion of Sentinel-1 and Sentinel-2 data.
 
 ## Acknowledging this work
 
 If you utilize elements from this work for your own work, please cite:
 
-* Scheibenreif, Hanna, Mommert, Borth; *Self-supervised Vision Transformers for Land-cover Segmentation and Classification*, CVPR 2022 *Earthvision* Workshop
+* Scheibenreif, Hanna, Mommert, Borth, *Self-supervised Vision Transformers for Land-cover Segmentation and Classification*, Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops, 2022, pp. 1422-1431
 
 and
 
-* Scheibenreif, Mommert, Borth; *Contrastive Self-Supervised Data Fusion for Satellite Imagery*,  ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences, Volume V-3-2022
+* Scheibenreif, Mommert, Borth, *Contrastive Self-Supervised Data Fusion for Satellite Imagery*,  ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences, Volume V-3-2022
 
 
 ## Code
