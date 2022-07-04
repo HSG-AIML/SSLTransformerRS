@@ -44,11 +44,11 @@ These backbones can be readily fine-tuned to a range of downstream tasks that ut
 
 ## Acknowledging this work
 
-If you utilize elements from this work for your own work, please cite:
+If you would like to cite our work, please use the following reference:
 
 * Scheibenreif, Hanna, Mommert, Borth, *Self-supervised Vision Transformers for Land-cover Segmentation and Classification*, Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops, 2022, pp. 1422-1431
 
-and
+and/or
 
 * Scheibenreif, Mommert, Borth, *Contrastive Self-Supervised Data Fusion for Satellite Imagery*,  ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences, Volume V-3-2022
 
