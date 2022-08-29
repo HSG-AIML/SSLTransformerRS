@@ -36,6 +36,7 @@ The datasets used in this work are publicly available:
 We provide pretrained ResNet50 and Swin-t transformer backbones trained with Sentinel-1/2 pairs from SEN12MS (self-supervised):
 * [ResNet50](https://drive.google.com/file/d/1txqsNLUhIiQXRxflK_SMHn4y7Pp8o3mZ/view?usp=sharing)
 * [Swin-t](https://drive.google.com/file/d/1e7QhC2-zoBFgb65yN1ADWBZLMShHOweY/view?usp=sharing)
+* [ResNet18](https://drive.google.com/file/d/1vbj9WVK-MZNuAJGEOGEvE663b9BUwPSh/view?usp=sharing)
 
 These backbones can be readily fine-tuned to a range of downstream tasks that utilize Sentinel-1 data, Sentinel-2 data or the fusion of both. We provide example Jupyter Notebooks for utilizing these pretrained backbones:
 
