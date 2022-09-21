@@ -78,7 +78,7 @@ def validate_all(model, val_loader, criterion, device, config, model_name, targe
             elif target_name == "multi-classification":
                 y = sample[config.target].to(device)
             elif target_name == "pixel-classification":
-                y = sample[config.target].type(torch.LongTensor).to(device)
+                y = sample[config.target].squeeze().type(torch.LongTensor).to(device)
 
             y_hat = model(img)
 

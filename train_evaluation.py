@@ -547,7 +547,7 @@ for epoch in range(config.epochs):
         elif target_name == "multi-classification":
             y = sample[config.target].to(device)
         elif target_name == "pixel-classification":
-            y = sample[config.target].type(torch.LongTensor).to(device)
+            y = sample[config.target].squeeze().type(torch.LongTensor).to(device)
 
         y_hat = model(img)
 
