@@ -17,7 +17,8 @@ The Swin transformer backbones are trained with the `train_d_swin_backbone.py` s
 ## Downstream Tasks
 Fine-tuning and linear evaluation on the classification tasks is done with `train_evaluation.py`. The `downstream_eval_scripts/` directory contains small bash scripts to evaluate the different settings covered in the paper.
 
-You can use the pre-trained weights (downloaded from the [checkpoints](#Checkpoints)) and then run for example:
+
+You can use the pre-trained weights (downloaded from the [Pretrained models](#pretrained-models)) and then run for example:
 ```bash
 # Single-label Classification
 python train_evaluation.py --model=DoubleSwinTransformerDownstream --image_px_size=224 --batch_size=8 --checkpoint=/path/to/checkpoint --target dfc_label
