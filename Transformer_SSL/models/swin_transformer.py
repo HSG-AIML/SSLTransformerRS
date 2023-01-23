@@ -842,7 +842,7 @@ class SwinTransformer(nn.Module):
     def no_weight_decay_keywords(self):
         return {"relative_position_bias_table"}
 
-    def forward_features(self, x):
+    def forward_features(self, x, return_all_features=True):
         x = self.patch_embed(x)
         if self.ape:
             x = x + self.absolute_pos_embed
@@ -856,10 +856,14 @@ class SwinTransformer(nn.Module):
         x = self.norm(x)  # B L C
         x_pool = self.avgpool(x.transpose(1, 2))  # B C 1
         x_pool = torch.flatten(x_pool, 1)
-        return x_pool, x, x_downsample
+
+        if return_all_features:
+            return x_pool, x, x_downsample
+        else:
+            return x_pool
 
     def forward(self, x):
-        x = self.forward_features(x)
+        x = self.forward_features(x, return_all_features=False)
         x = self.head(x)
         return x
 
@@ -884,8 +888,8 @@ class DoubleSwinTransformer(nn.Module):
 
     def forward(self, x):
         return {
-            "s1": self.backbone1.forward_features(x["s1"]),
-            "s2": self.backbone2.forward_features(x["s2"]),
+            "s1": self.backbone1.forward_features(x["s1"], return_all_features=False),
+            "s2": self.backbone2.forward_features(x["s2"], return_all_features=False),
         }
 
 
